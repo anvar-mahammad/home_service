@@ -129,7 +129,7 @@ void laser_callback(const sensor_msgs::LaserScan::ConstPtr& scan_msg)
         crashed = false;
     }
 
-    // Assign movements to a robot that still did not crash 
+    // Assign movements to a robot that still did not crash
     if (!crashed) {
 
         if (range_min <= 0.5 && !thats_a_door) {
@@ -177,21 +177,19 @@ void laser_callback(const sensor_msgs::LaserScan::ConstPtr& scan_msg)
 
 int main(int argc, char** argv)
 {
-    ROS_INFO("Starting wall_follower_node \n");
-  
     // Initialize a ROS node
-    ros::init(argc, argv, "node");
+    ros::init(argc, argv, "wall_follower");
 
     // Create a ROS NodeHandle object
     ros::NodeHandle n;
 
     // Inform ROS master that we will be publishing a message of type geometry_msgs::Twist on the robot actuation topic with a publishing queue size of 100
-    motor_command_publisher = n.advertise<geometry_msgs::Twist>("/cmd_vel_mux/input/navi", 100);
+    motor_command_publisher = n.advertise<geometry_msgs::Twist>("/cmd_vel_mux/input/teleop", 100);
+    //motor_command_publisher = n.advertise<geometry_msgs::Twist>("/tf", 100);
 
     // Subscribe to the /scan topic and call the laser_callback function
+    //laser_subscriber = n.subscribe("/laserscan", 1000, laser_callback);
     laser_subscriber = n.subscribe("/scan", 1000, laser_callback);
-  
-    ROS_INFO("Entering loop\n");
 
     // Enter an infinite loop where the laser_callback function will be called when new laser messages arrive
     ros::Duration time_between_ros_wakeups(0.001);
